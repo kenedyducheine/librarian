@@ -7,7 +7,7 @@ import requests as req
 # nyt csv includes summary of book
 
 ## isbn site
-# api key = --
+# api key = -
 
 ## goodreads = test and train
 goodreads = pd.read_csv("/Users/KenedyDucheine/PycharmProjects/librarian/goodreads_library_export.csv")
