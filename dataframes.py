@@ -62,13 +62,43 @@ goodreads = goodreads.loc[pd.notna(goodreads['synopsis'])]
 #goodreads[['My rating']] = goodreads[['My Rating']].replace(0, 1)
 #goodreads = goodreads.iloc[:,[0,1,2,4,5,6]]
 
-#
+#goodreads['ISBN13'] = goodreads['ISBN13'].astype(int)
+
 
 #goodreads['info'] = goodreads['info'].split('synopsis')[1].split('language')[0]
 
 ##nyt = irl test
 nyt = pd.read_csv('/Users/KenedyDucheine/PycharmProjects/librarian/nyt_bestseller.csv')
 nyt = nyt[['isbn13', 'title', 'author', 'description']]
+nyt = nyt.dropna(axis = 0)
+nyt['isbn13'] = nyt['isbn13'].astype(int)
+nyt = nyt[~(nyt['isbn13'].str.contains('A'))]
+nyt = nyt[~(nyt['isbn13'].str.contains('B'))]
+nyt = nyt[~(nyt['isbn13'].str.contains('D'))]
+nyt['isnb13'] = nyt['isbn13'].astype(int)
+nyt1 = nyt.iloc[0:4360,]
+
+
+
+infolist2 = []
+infodf2 = pd.DataFrame(columns = ['info'] , index=range(len(nyt)))
+h = {'Authorization': '50447_106cb061761784283dc96ecd3d2cb80c'}
+for i in nyt1['isbn13']:
+    url = f"https://api2.isbndb.com/book/{i}"
+    resp = req.get(url, headers=h)
+    product = resp.json()
+    #goodreads['info'] = goodreads['info'].append(product)
+    infolist2.append(product)
+nyt1['info'] = list(infolist2)
+
+nyt1 = nyt1.reset_index()
+nyt1 = nyt1.join(nyt1['info'].apply(pd.Series))
+nyt1 = nyt1.join(nyt1['book'].apply(pd.Series), how = 'left', lsuffix = 'left', rsuffix='right')
+nyt1 = nyt1[['titleleft', 'authors', 'isbn13left','synopsis']]
+nyt1 = nyt1.loc[pd.notna(nyt1['synopsis'])]
+
+
+
 
 
 
