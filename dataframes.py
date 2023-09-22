@@ -6,9 +6,8 @@ import requests as req
 
 # nyt csv includes summary of book
 
-
 ## isbn site
-# api key = 50447_106cb061761784283dc96ecd3d2cb80c
+# api key = --
 
 ## goodreads = test and train
 goodreads = pd.read_csv("/Users/KenedyDucheine/PycharmProjects/librarian/goodreads_library_export.csv")
@@ -39,7 +38,7 @@ goodreads['ISBN13'] = goodreads['ISBN13'].astype(int)
 infolist = []
 infodf = pd.DataFrame(columns = ['info'] , index=range(len(goodreads)))
 for i in goodreads['ISBN13']:
-    h = {'Authorization': '50447_106cb061761784283dc96ecd3d2cb80c'}
+    h = {'Authorization': '--'}
     url = f"https://api2.isbndb.com/book/{i}"
     resp = req.get(url, headers=h)
     product = resp.json()
@@ -82,7 +81,7 @@ nyt1 = nyt.iloc[0:4360,]
 
 infolist2 = []
 infodf2 = pd.DataFrame(columns = ['info'] , index=range(len(nyt)))
-h = {'Authorization': '50447_106cb061761784283dc96ecd3d2cb80c'}
+h = {'Authorization': '--'}
 for i in nyt1['isbn13']:
     url = f"https://api2.isbndb.com/book/{i}"
     resp = req.get(url, headers=h)
