@@ -1,5 +1,6 @@
 import pandas as pd
 import requests as req
+import re
 
 # use nlp to loop through my ratings and history on good reads to suggest
 # a book from either nyt best sellers or goodreads popular books or something else
@@ -60,42 +61,49 @@ goodreads = goodreads[['Title', 'Author', 'ISBN13', 'My Rating','synopsis']]
 goodreads = goodreads.loc[pd.notna(goodreads['synopsis'])]
 #goodreads[['My rating']] = goodreads[['My Rating']].replace(0, 1)
 #goodreads = goodreads.iloc[:,[0,1,2,4,5,6]]
-
 #goodreads['ISBN13'] = goodreads['ISBN13'].astype(int)
-
-
 #goodreads['info'] = goodreads['info'].split('synopsis')[1].split('language')[0]
+
+
 
 ##nyt = irl test
 nyt = pd.read_csv('/Users/KenedyDucheine/PycharmProjects/librarian/nyt_bestseller.csv')
 nyt = nyt[['isbn13', 'title', 'author', 'description']]
 nyt = nyt.dropna(axis = 0)
-nyt['isbn13'] = nyt['isbn13'].astype(int)
 nyt = nyt[~(nyt['isbn13'].str.contains('A'))]
 nyt = nyt[~(nyt['isbn13'].str.contains('B'))]
 nyt = nyt[~(nyt['isbn13'].str.contains('D'))]
 nyt['isnb13'] = nyt['isbn13'].astype(int)
 nyt1 = nyt.iloc[0:4360,]
-
+nyt2 = nyt.iloc[4360:9360,]
+nyt3 = nyt.iloc[9360:14360,]
+nyt4 = nyt.iloc[14360:19460,]
+nyt5 = nyt.iloc[19460:26460,]
 
 
 infolist2 = []
-infodf2 = pd.DataFrame(columns = ['info'] , index=range(len(nyt)))
-h = {'Authorization': '--'}
-for i in nyt1['isbn13']:
+infodf2 = pd.DataFrame(columns = ['info'] , index=range(len(nyt3)))
+h = {'Authorization': '50447_106cb061761784283dc96ecd3d2cb80c'}
+for i in nyt5['isbn13']:
     url = f"https://api2.isbndb.com/book/{i}"
     resp = req.get(url, headers=h)
     product = resp.json()
     #goodreads['info'] = goodreads['info'].append(product)
     infolist2.append(product)
-nyt1['info'] = list(infolist2)
+nyt5['info'] = list(infolist2)
 
-nyt1 = nyt1.reset_index()
-nyt1 = nyt1.join(nyt1['info'].apply(pd.Series))
-nyt1 = nyt1.join(nyt1['book'].apply(pd.Series), how = 'left', lsuffix = 'left', rsuffix='right')
-nyt1 = nyt1[['titleleft', 'authors', 'isbn13left','synopsis']]
-nyt1 = nyt1.loc[pd.notna(nyt1['synopsis'])]
+nyt5 = nyt5.reset_index()
+nyt5 = nyt5.join(nyt5['info'].apply(pd.Series))
+nyt5 = nyt5.join(nyt5['book'].apply(pd.Series), how = 'left', lsuffix = 'left', rsuffix='right')
+nyt5 = nyt5[['titleleft', 'authors', 'isbn13left','synopsis']]
+nyt5 = nyt5.loc[pd.notna(nyt5['synopsis'])]
 
+nyt1 = pd.read_csv("nyt1.csv")
+nyt2 = pd.read_csv("nyt2.csv")
+nyt3 = pd.read_csv("nyt3.csv")
+nytnew = pd.concat([nyt1, nyt2, nyt3], axis = 0)
+nytnew = nytnew.reset_index()
+nytnew.to_csv("nytnew.csv")
 
 
 
