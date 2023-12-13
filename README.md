@@ -1,5 +1,5 @@
 ### Librarian
-Using a Random Forest Classifier model to predict which books from the NYT Best Seller list (2009 - 2019) I would enjoy based on ratings I have given previous books. I used Goodreads to consolidate my book reviews. The synopsis of the books, as vector embeddings, and my review, were the training features. 
+Using a Random Forest Classifier model to predict which books from the NYT Best Seller list (2009 - 2019) I would enjoy based on ratings I had given previous books. I used Goodreads to consolidate my book reviews. The synopsis of the books, as vector embeddings, and my review, were the training features. 
 
 Cannot scale up given that Goodreads API no longer exists. 
 
